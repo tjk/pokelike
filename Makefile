@@ -18,6 +18,8 @@ LIBS+=deps/libsndfile/src/.libs/libsndfile.a
 
 ifeq ($(UNAME_S),Darwin)
   LIBS+=-framework CoreFoundation -framework CoreServices -framework CoreAudio -framework AudioToolbox -framework AudioUnit
+else ifeq ($(UNAME_S),Linux)
+  LIBS+=-lm -lrt -lasound -ljack -pthread
 endif
 
 all: $(NAME)
