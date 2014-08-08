@@ -1,0 +1,12 @@
+Makefile
+bin-stamp
+bin/
+config.log
+config.status
+lib-stamp
+lib/
+libtool
+*.pc
+.libs/
+*.o
+*.lo
