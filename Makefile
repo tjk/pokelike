@@ -41,7 +41,7 @@ deps/.libsndfile:
 	touch $@
 
 $(NAME): deps $(SOURCES)
-	$(CC) $(CFLAGS) -o $(NAME) $(filter-out *.h, $(SOURCES)) $(INCLUDES) $(LIBS)
+	$(CC) $(CFLAGS) -o $(NAME) $(filter-out %.h, $(SOURCES)) $(INCLUDES) $(LIBS)
 
 clean:
 	rm -rf deps/.* 2> /dev/null
