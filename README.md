@@ -13,4 +13,5 @@ _This project is not for profit. Please don't sue me for using copyrighted asset
 
 ## TODO
 
-- [ ] it's time to split up pokelike.c!
+- [x] it's time to split up pokelike.c!
+- [ ] deal with the "copyright infringement" (ie. move assets to submodule?)
