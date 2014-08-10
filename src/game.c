@@ -9,10 +9,10 @@
 #include "map.h"
 
 // TODO move this
-static struct animation animation_curtain = {
-    .frame = 0,
-    .num_frames = 12,
-    .animation_render_func = animation_curtain_render,
+static struct animation animations[] = {
+    { .frame = 0, .num_frames = 12, .render_func = animation_curtain_render },
+    { .frame = 0, .num_frames = 12, .render_func = animation_inward_render },
+    { .frame = 0, .num_frames = 12, .render_func = animation_snake_render },
 };
 
 void game_init(struct game *game)
@@ -33,7 +33,8 @@ void game_tick(struct game *game)
                 // 2) run the following code when the playback callback is first triggered
                 sleep(1);
                 game->state = GAME_STATE__BATTLE_PRE_ANIMATION;
-                game->animation = &animation_curtain; // TODO randomize the animation to use!
+                int r = rand() % (sizeof(animations)/sizeof(animations[0]));
+                game->animation = &animations[r];
                 game->animation->frame = 0;
             } else {
                 snprintf(game->debug, sizeof(game->debug), "Player standing on grass.");
@@ -81,7 +82,7 @@ void game_render(struct game *game)
         break;
     case GAME_STATE__BATTLE_PRE_ANIMATION:
         box(stdscr, 0, 0);
-        game->animation->animation_render_func(game->animation, h, w);
+        game->animation->render_func(game->animation, h, w);
         break;
     case GAME_STATE__BATTLE:;
         // TODO
