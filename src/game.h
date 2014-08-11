@@ -12,15 +12,26 @@ enum game_state {
     GAME_STATE__BATTLE,
 };
 
+enum window {
+    WINDOW__BATTLE_PRIMARY = 0,
+    WINDOW__BATTLE_SECONDARY,
+    // TODO menus - windows? panels?
+
+    NUM__WINDOW,
+};
+
 struct game {
     struct player *player;
     struct map_chunk *chunk; // TODO map? (lots of chunks)
     struct audio audio;
     struct animation *animation;
     struct battle *battle;
+    WINDOW *windows[NUM__WINDOW]; // TODO de-couple ncurses?
     enum game_state state;
     bool running;
     char debug[1024];
+    unsigned int frame; // TODO obvious rollover issue
+    unsigned int saved_frame;
 };
 
 void game_init(struct game *game);

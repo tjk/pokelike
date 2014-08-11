@@ -41,23 +41,29 @@ int main(void)
         exit(EXIT_FAILURE);
     }
     start_color();
-    init_pair(COLOR_GRASS, COLOR_WHITE, COLOR_GREEN);
+    init_pair(COLOR__GRASS, COLOR_WHITE, COLOR_GREEN);
+    init_pair(COLOR__HP_GOOD, COLOR_GREEN, COLOR_GREEN);
 
     struct game game;
-    game_init(&game);
     audio_init(&game.audio);
+    game_init(&game);
 
-    // TODO clean up this
+    // TODO clean this up
     struct map_chunk chunk;
     map_chunk_init(&chunk);
     game.chunk = &chunk;
 
+    // TODO improve game loop
+    // - "rendering" and update tick do not need to have same rate
+    // - fix input triggering after letting go, etc.
     for (;;) {
         int c = getch();
         game_handle_input(&game, c);
 
         game_tick(&game);
+
         game_render(&game);
+        ++game.frame;
 
         usleep(100000);
     }

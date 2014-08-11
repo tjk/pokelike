@@ -8,7 +8,8 @@
 PaError err;
 
 enum audio_stream {
-    AUDIO_STREAM__BATTLE = 0,
+    AUDIO_STREAM__EXPLORE = 0,
+    AUDIO_STREAM__BATTLE,
 
     NUM__AUDIO_STREAM,
 };

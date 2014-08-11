@@ -2,6 +2,7 @@
 
 // must match with enum audio_stream
 static char *audio_stream_paths[] = {
+    "./assets/explore.wav",
     "./assets/battle.wav",
 };
 
@@ -81,6 +82,7 @@ void audio_play(struct audio *audio, enum audio_stream stream)
     if (paNoError != (err = Pa_StartStream(audio->streams[stream])))
         FPRINTF(stderr, "portaudio Pa_StartStream() error: %s\n", Pa_GetErrorText(err));
 
+    audio->current_file = audio->files[stream];
     audio->current_stream = audio->streams[stream];
 }
 
@@ -91,7 +93,8 @@ void audio_destroy(struct audio *audio)
         exit(EXIT_FAILURE);
     }
 
-    // TODO save file handles... sf_close(file);
+    for (int i = 0; i < NUM__AUDIO_STREAM; ++i)
+        sf_close(audio->files[i]);
 
     Pa_Terminate();
 }

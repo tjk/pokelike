@@ -4,7 +4,10 @@
 
 #include <curses.h>
 
-#define COLOR_GRASS 1
+enum color {
+    COLOR__GRASS = 1,
+    COLOR__HP_GOOD,
+};
 
 #define TILE_EMPTY ' '
 #define TILE_GRASS 'v'
