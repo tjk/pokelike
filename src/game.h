@@ -8,7 +8,7 @@
 
 enum game_state {
     GAME_STATE__EXPLORE = 0,
-    GAME_STATE__BATTLE_PRE_ANIMATION,
+    GAME_STATE__PRE_BATTLE,
     GAME_STATE__BATTLE,
 };
 
@@ -25,6 +25,8 @@ struct game {
 
 void game_init(struct game *game);
 void game_init_audio(struct game *game);
+
+void game_set_state(struct game *game, enum game_state state);
 
 void game_tick(struct game *game);
 
