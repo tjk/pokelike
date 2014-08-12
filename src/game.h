@@ -6,19 +6,21 @@
 #include "audio.h"
 #include "player.h"
 
-enum game_state {
+#define GAME_DEBUG_SIZE 1024
+
+typedef enum {
     GAME_STATE__EXPLORE = 0,
     GAME_STATE__PRE_BATTLE,
     GAME_STATE__BATTLE,
-};
+} game_state_t;
 
-enum window {
+typedef enum {
     WINDOW__BATTLE_PRIMARY = 0,
     WINDOW__BATTLE_SECONDARY,
     // TODO menus - windows? panels?
 
     NUM__WINDOW,
-};
+} window_t;
 
 struct game {
     struct player *player;
@@ -27,9 +29,9 @@ struct game {
     struct animation *animation;
     struct battle *battle;
     WINDOW *windows[NUM__WINDOW]; // TODO de-couple ncurses?
-    enum game_state state;
+    game_state_t state;
     bool running;
-    char debug[1024];
+    char debug[GAME_DEBUG_SIZE];
     unsigned int frame; // TODO obvious rollover issue
     unsigned int saved_frame;
 };
@@ -37,7 +39,7 @@ struct game {
 void game_init(struct game *game);
 void game_init_audio(struct game *game);
 
-void game_set_state(struct game *game, enum game_state state);
+void game_set_state(struct game *game, game_state_t state);
 
 void game_tick(struct game *game);
 

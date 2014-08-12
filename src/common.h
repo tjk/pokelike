@@ -4,10 +4,12 @@
 
 #include <curses.h>
 
-enum color {
+typedef enum {
     COLOR__GRASS = 1,
     COLOR__HP_GOOD,
-};
+    COLOR__HP_WARNING,
+    COLOR__HP_DANGER,
+} color_t;
 
 #define TILE_EMPTY ' '
 #define TILE_GRASS 'v'
@@ -18,3 +20,18 @@ enum color {
     fprintf(fd, __VA_ARGS__); \
     refresh(); \
 } while (0);
+
+#define MALLOC(size) _malloc(size)
+static inline void *_malloc(int size)
+{
+    void *ptr = malloc(size);
+    if (!ptr) {
+        FPRINTF(stderr, "out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return ptr;
+}
+
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))

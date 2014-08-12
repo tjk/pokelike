@@ -46,17 +46,15 @@ void game_tick(struct game *game)
         int frame = game->frame - game->saved_frame;
         snprintf(game->debug, sizeof(game->debug), "Playing animation! [%d/%d]",
                 frame, game->animation->num_frames);
-        if (frame == game->animation->num_frames + NUM_FLICKER_FRAMES) {
-            game->battle = battle_new();
+        if (frame == game->animation->num_frames + NUM_FLICKER_FRAMES)
             game_set_state(game, GAME_STATE__BATTLE);
-        }
         break;
     case GAME_STATE__BATTLE:
         break;
     }
 }
 
-void game_set_state(struct game *game, enum game_state state)
+void game_set_state(struct game *game, game_state_t state)
 {
     switch (state) {
     case GAME_STATE__EXPLORE:
@@ -74,7 +72,9 @@ void game_set_state(struct game *game, enum game_state state)
         game->saved_frame = game->frame;
         break;
     case GAME_STATE__BATTLE:
+        game->battle = battle_new(game->player);
         snprintf(game->debug, sizeof(game->debug), "It's battle time.");
+        // TODO audio_play + seek to offset of pre-battle animation audio?
         game->saved_frame = game->frame;
         break;
     }
@@ -112,7 +112,7 @@ void game_render(struct game *game)
         game->animation->render_func(game->animation, frame, h, w);
         break;
     case GAME_STATE__BATTLE:
-        // TODO refactor this!!!!
+        // TODO refactor this!!!! (maybe battle_render?)
         main_win = game->windows[WINDOW__BATTLE_PRIMARY];
         int main_h = h * (float)2 / 3;
         // TODO only do resize + mv on screen size change SIGNAL
@@ -132,24 +132,72 @@ void game_render(struct game *game)
         int padding_h = 2;
         // TODO saved_frame wouldn't work here if abilities were animated
         float ratio = (float)(game->frame - game->saved_frame) / 15;
+        struct monster *monster_top = game->battle->monster_top;
         if (ratio > 1) {
             ratio = 1;
             // animation finished, show names, level, and hp bars
             // top subject
-            mvwprintw(main_win, padding_h*2, padding_w*3, "RATTATA (lv 3)");
+            mvwprintw(main_win, padding_h*2, padding_w*3, "%s (lv %d)",
+                    monster_top->species->name, monster_top->level);
             mvwprintw(main_win, padding_h*2 + 1, padding_w*3 + 2, "HP:");
-            wattron(main_win, COLOR_PAIR(COLOR__HP_GOOD));
             int hp_w = w / 4;
-            for (int x = 0; x < hp_w; ++x)
+            float hp_ratio = (float)monster_top->hp / monster_top->hp_total;
+            int hp_remaining_w = hp_w * hp_ratio;
+            if (hp_ratio > .5f) {
+                wattron(main_win, COLOR_PAIR(COLOR__HP_GOOD));
+            } else if (hp_ratio > .25f) {
+                wattron(main_win, COLOR_PAIR(COLOR__HP_WARNING));
+            } else {
+                wattron(main_win, COLOR_PAIR(COLOR__HP_DANGER));
+            }
+            for (int x = 0; x < hp_remaining_w; ++x)
                 mvwaddch(main_win, padding_h*2 + 1, padding_w*3 + 2 + sizeof("HP:") + x, ACS_CKBOARD);
-            wattroff(main_win, COLOR_PAIR(COLOR__HP_GOOD));
-            // bottom subject
-            mvwprintw(main_win, main_h - padding_h*2 - 2, w - padding_w*3 - hp_w - 2, "CHARIZARD (lv 100)");
-            mvwprintw(main_win, main_h - padding_h*2 - 1, w - padding_w*3 - hp_w, "HP:");
-            wattron(main_win, COLOR_PAIR(COLOR__HP_GOOD));
-            for (int x = 0; x < hp_w; ++x)
-                mvwaddch(main_win, main_h - padding_h*2 - 1, w - padding_w*3 - hp_w + sizeof("HP:") + x, ACS_CKBOARD);
-            wattroff(main_win, COLOR_PAIR(COLOR__HP_GOOD));
+            if (hp_ratio > .5f) {
+                wattroff(main_win, COLOR_PAIR(COLOR__HP_GOOD));
+            } else if (hp_ratio > .25f) {
+                wattroff(main_win, COLOR_PAIR(COLOR__HP_WARNING));
+            } else {
+                wattroff(main_win, COLOR_PAIR(COLOR__HP_DANGER));
+            }
+            for (int x = hp_remaining_w; x < hp_w; ++x)
+                mvwaddch(main_win, padding_h*2 + 1,
+                        padding_w*3 + 2 + sizeof("HP:") + x, ACS_CKBOARD);
+            mvwprintw(main_win, padding_h*2 + 2,
+                    padding_w*3 + 2 + sizeof("HP:"), "%d / %d",
+                    monster_top->hp, monster_top->hp_total);
+
+            // bottom subject (TODO monster_battle_render or something)
+            struct monster *monster_bot = game->battle->monster_bot;
+            mvwprintw(main_win, main_h - padding_h*2 - 2,
+                    w - padding_w*3 - hp_w - 2, "%s (lv %d)",
+                    monster_bot->species->name, monster_bot->level);
+            mvwprintw(main_win, main_h - padding_h*2 - 1,
+                    w - padding_w*3 - hp_w, "HP:");
+            hp_ratio = (float)monster_bot->hp / monster_bot->hp_total;
+            hp_remaining_w = hp_w * hp_ratio;
+            if (hp_ratio > .5f) {
+                wattron(main_win, COLOR_PAIR(COLOR__HP_GOOD));
+            } else if (hp_ratio > .25f) {
+                wattron(main_win, COLOR_PAIR(COLOR__HP_WARNING));
+            } else {
+                wattron(main_win, COLOR_PAIR(COLOR__HP_DANGER));
+            }
+            for (int x = 0; x < hp_remaining_w; ++x)
+                mvwaddch(main_win, main_h - padding_h*2 - 1,
+                        w - padding_w*3 - hp_w + sizeof("HP:") + x, ACS_CKBOARD);
+            if (hp_ratio > .5f) {
+                wattroff(main_win, COLOR_PAIR(COLOR__HP_GOOD));
+            } else if (hp_ratio > .25f) {
+                wattroff(main_win, COLOR_PAIR(COLOR__HP_WARNING));
+            } else {
+                wattroff(main_win, COLOR_PAIR(COLOR__HP_DANGER));
+            }
+            for (int x = hp_remaining_w; x < hp_w; ++x)
+                mvwaddch(main_win, main_h - padding_h*2 - 1,
+                        w - padding_w*3 - hp_w + sizeof("HP:") + x, ACS_CKBOARD);
+            mvwprintw(main_win, main_h - padding_h*2,
+                    w - padding_w*3 - hp_w + sizeof("HP:"), "%d / %d",
+                    monster_bot->hp, monster_bot->hp_total);
 
             // TODO make this "responsive" (tongue-in-cheek)
             for (int y = 0; y < sub_h; ++y)
@@ -160,7 +208,7 @@ void game_render(struct game *game)
             mvwprintw(sub_win, sub_h - 4, w - 34, "[P]ACK");
             mvwprintw(sub_win, sub_h - 4, w - 14, "[R]UN");
         } else {
-            mvwprintw(sub_win, 2, 6, "WILD RATTATA APPEARED!");
+            mvwprintw(sub_win, 2, 6, "WILD %s APPEARED!", monster_top->species->name);
         }
         int sprite_x_offset = (w - sprite_w - padding_w) * ratio;
         for (int y = 0; y < sprite_h; ++y) {
@@ -199,6 +247,9 @@ void game_handle_input(struct game *game, int c)
         --game->player->x;
         break;
     // TODO only support these if game state is GAME_STATE__BATTLE
+    case 'h':
+        game->battle->monster_top->hp -= 3; // TODO
+        break;
     case 'f':
         // TODO show fight menu
         break;

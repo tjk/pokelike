@@ -14,6 +14,7 @@ _This project is not for profit. Please don't sue me for using copyrighted asset
 ## TODO
 
 - [x] it's time to split up pokelike.c!
+- [ ] sometimes battle doesn't render, obvious bug is alluding me at the moment (sleep time)
 - [ ] deal with the "copyright infringement" (ie. move assets to submodule?) -> procedural music generation
 - [ ] back-off when triggering a battle (so don't re-enter a battle immediately)
 - [ ] flicker from render loop pretty bad on linux during battle state

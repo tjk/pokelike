@@ -1,6 +1,6 @@
 #include "audio.h"
 
-// must match with enum audio_stream
+// must match with audio_stream_t
 static char *audio_stream_paths[] = {
     "./assets/explore.wav",
     "./assets/battle.wav",
@@ -75,7 +75,7 @@ void audio_stop(struct audio *audio)
     audio->should_stop = true;
 }
 
-void audio_play(struct audio *audio, enum audio_stream stream)
+void audio_play(struct audio *audio, audio_stream_t stream)
 {
     audio_stop(audio);
 

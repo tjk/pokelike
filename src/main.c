@@ -43,6 +43,8 @@ int main(void)
     start_color();
     init_pair(COLOR__GRASS, COLOR_WHITE, COLOR_GREEN);
     init_pair(COLOR__HP_GOOD, COLOR_GREEN, COLOR_GREEN);
+    init_pair(COLOR__HP_WARNING, COLOR_YELLOW, COLOR_YELLOW);
+    init_pair(COLOR__HP_DANGER, COLOR_RED, COLOR_RED);
 
     struct game game;
     audio_init(&game.audio);

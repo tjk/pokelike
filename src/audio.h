@@ -7,12 +7,12 @@
 
 PaError err;
 
-enum audio_stream {
+typedef enum {
     AUDIO_STREAM__EXPLORE = 0,
     AUDIO_STREAM__BATTLE,
 
     NUM__AUDIO_STREAM,
-};
+} audio_stream_t;
 
 struct audio {
     SNDFILE *files[NUM__AUDIO_STREAM];
@@ -25,6 +25,6 @@ struct audio {
 void audio_init(struct audio *audio);
 
 void audio_stop(struct audio *audio);
-void audio_play(struct audio *audio, enum audio_stream stream);
+void audio_play(struct audio *audio, audio_stream_t stream);
 
 void audio_destroy(struct audio *audio);
