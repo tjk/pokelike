@@ -133,7 +133,7 @@ void game_render(struct game *game)
         // TODO saved_frame wouldn't work here if abilities were animated
         float ratio = (float)(game->frame - game->saved_frame) / 15;
         struct monster *monster_top = game->battle->monster_top;
-        if (ratio > 1) {
+        if (ratio >= 1) {
             ratio = 1;
             // animation finished, show names, level, and hp bars
             // top subject
