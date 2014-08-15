@@ -1,5 +1,5 @@
 CC=clang
-CFLAGS=-O2 -Wall
+CFLAGS=-O2 -Wall -g
 
 UNAME_S:=$(shell uname -s)
 

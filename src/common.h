@@ -9,6 +9,7 @@ typedef enum {
     COLOR__HP_GOOD,
     COLOR__HP_WARNING,
     COLOR__HP_DANGER,
+    COLOR__FG_BG_SWAPPED,
 } color_t;
 
 #define TILE_EMPTY ' '
@@ -35,3 +36,5 @@ static inline void *_malloc(int size)
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
+
+#define ARRAY_SIZE(x) (sizeof(x)/sizeof((x)[0]))

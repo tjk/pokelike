@@ -15,6 +15,19 @@ typedef enum {
 } game_state_t;
 
 typedef enum {
+    CURSOR__FIGHT = 0,
+    CURSOR__TEAM,
+    CURSOR__PACK,
+    CURSOR__RUN,
+
+    CURSOR__FIGHT_MOVE,
+    CURSOR__FIGHT_MOVE_1 = CURSOR__FIGHT_MOVE,
+    CURSOR__FIGHT_MOVE_2,
+    CURSOR__FIGHT_MOVE_3,
+    CURSOR__FIGHT_MOVE_4,
+} cursor_t;
+
+typedef enum {
     WINDOW__BATTLE_PRIMARY = 0,
     WINDOW__BATTLE_SECONDARY,
     // TODO menus - windows? panels?
@@ -34,6 +47,7 @@ struct game {
     char debug[GAME_DEBUG_SIZE];
     unsigned int frame; // TODO obvious rollover issue
     unsigned int saved_frame;
+    cursor_t cursor;
 };
 
 void game_init(struct game *game);
