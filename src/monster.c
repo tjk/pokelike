@@ -37,12 +37,11 @@ struct monster_species *monster_species_new()
         if (MONSTER_SPECIES_BITMAP_W % 2 == 1)
             monster_species->bitmap[y][MONSTER_SPECIES_BITMAP_W / 2] = rand() % 2;
     }
-    short fg, bg;
+    int i;
     do {
-         int i = rand() % COLORS;
-         pair_content(COLOR_PAIR(i), &fg, &bg);
+         i = rand() % COLORS;
          monster_species->color = i;
-    } while (fg == COLOR_WHITE);
+    } while (i >= NUM__COLOR);
 
     return monster_species;
 }

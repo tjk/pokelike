@@ -9,7 +9,8 @@ typedef enum {
     COLOR__HP_GOOD,
     COLOR__HP_WARNING,
     COLOR__HP_DANGER,
-    COLOR__FG_BG_SWAPPED,
+
+    NUM__COLOR,
 } color_t;
 
 #define TILE_EMPTY ' '
