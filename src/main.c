@@ -8,6 +8,7 @@
 #include "common.h"
 #include "game.h"
 #include "map.h"
+#include "names.h"
 
 static void _finish(int sig)
 {
@@ -45,6 +46,8 @@ int main(void)
     init_pair(COLOR__HP_GOOD, COLOR_GREEN, COLOR_GREEN);
     init_pair(COLOR__HP_WARNING, COLOR_YELLOW, COLOR_YELLOW);
     init_pair(COLOR__HP_DANGER, COLOR_RED, COLOR_RED);
+
+    names_init();
 
     struct game game;
     audio_init(&game.audio);
